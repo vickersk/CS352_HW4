@@ -4,20 +4,19 @@
 #include <iostream>
 #include <string>
 
-/// Runs parseRecord on each line of the file, printing the results
-void parseAllRecords(std::istream& in, std::ostream& out) {
+/// Runs read_item on each lne of the file, printing the results
+void read_all_items(std::istream& in, std::ostream& out) {
     std::string line;
     while ( std::getline(in, line) ) {
         try {
-            out << parseRecord(line) << std::endl;
+            GroceryItem item = read_item(line);
+            out << item << std::endl;
         } catch (const WrongFieldCount& e) {
             out << "Wrong number of fields: " << e.num_fields << std::endl;
-        } catch (const InvalidCourseNum& e) {
-            out << "Invalid course number: " << e.course_num << std::endl;
-        } catch (const InvalidNumCredits& e) {
-            out << "Invalid number of credits: " << e.num_credits << std::endl;
-        } catch (const InvalidGrade& e) {
-            out << "Invalid grade: " << e.grade << std::endl;
+        } catch (const InvalidItemCode& e) {
+            out << "Invalid item code: " << e.item_code << std::endl;
+        } catch (const InvalidPrice& e) {
+            out << "Invalid price: " << e.unit_price << std::endl;
         }
     }
 }
@@ -25,18 +24,18 @@ void parseAllRecords(std::istream& in, std::ostream& out) {
 int main(int argc, char** argv) {
     switch(argc) {
         case 1: {
-            parseAllRecords(std::cin, std::cout);
+            read_all_items(std::cin, std::cout);
             break;
         }
         case 2: {
             std::ifstream in{argv[1]};
-            parseAllRecords(in, std::cout);
+            read_all_items(in, std::cout);
             break;
         }
         case 3: {
             std::ifstream in{argv[1]};
             std::ofstream out{argv[2]};
-            parseAllRecords(in, out);
+            read_all_items(in, out);
             break;
         }
         default: {

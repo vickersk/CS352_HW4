@@ -1,38 +1,45 @@
-module HW4(parseRecord) where
+module HW4(readItem, getDepartment) where
 
--- A record representing a student's course performance
--- Contains Subject, CourseNum, Section, NumCredits, "LastName, FirstName", Gpa
-type ClassRecord = (String,Int,String,Int,String,Double)
+-- A record representing a grocery item
+-- Contains item code, item name, unit price, and quantity
+type GroceryItem = (Int,String,Double,Int)
 
--- Parse error
+-- Parsing error
 data ParseError = 
-    WrongFieldCount Int         -- wrong count of fields, count provided
-    | InvalidCourseNum String   -- invalid course number, string provided
-    | InvalidNumCredits String  -- invalid number of credits, string provided
-    | InvalidGrade String       -- invalid grade, string provided
+    InvalidItemCode String -- Invalid course number, string provided
+    | InvalidPrice String  -- Invalid price, string provided
+    | WrongFieldCount Int  -- Wrong number of fields, count provided
     deriving Show
 
--- Converts a letter grade to the appropriate GPA
--- A = 4.0, B = 3.0, C = 2.0, D = 1.0, F = 0.0
--- All except F can be followed with + or - for +/- 0.3
--- Return Just grade on success, Nothing on error
-letterToGpa :: String -> Maybe Double
-letterToGpa letter = 
-    -- Temporary code, should be replaced
-    Nothing
-
--- Convert an input string in the following format to a ClassRecord tuple:
---   Subject CourseNum Section NumCredits FirstName LastName GradeLetter
--- 
+-- Convert an input string in the following format to a GroceryItem:
+--   ItemCode ItemName UnitPrice
+--
 -- The fields are subject to the following constraints:
---   * CourseNum and NumCredits are integer values
---   * GradeLetter is a valid grade according to the following grammar:
---       [A-D]('+'|'-')? | 'F'
---   * There are exactly seven whitespace-separated fields
+--   * ItemCode is an integer value
+--   * ItemName is a single whitespace-delimited token
+--   * UnitPrice is a floating-point value
+--   * There are exactly three whitespace-separated tokens
+--   * The GroceryItem's quantity will be 1
+--
+-- Returns Right item on a successful match, Left err on failure.
+readItem :: String -> Either ParseError GroceryItem
+readItem line =
+    error "unimplemented"
+
+-- Gets the department name for a given item code
 -- 
--- Returns the ClassRecord wrapped in Right on successful match, 
--- an appropriate ParseError wrapped in Left otherwise.
-parseRecord :: String -> Either ParseError ClassRecord
-parseRecord line =
-    -- Temporary code, should be replaced
-    Left (InvalidGrade "unimplemented")
+-- = Code = Department =
+--   1xxx   Grocery
+--   2xxx   Produce
+--   3xxx   Bakery
+--   4xxx   Deli
+--   5xxx   Dairy
+--   6xxx   Meat
+--   7xxx   Seafood
+--   8xxx   Housewares
+--   9xxx   Electronics
+--
+-- Returns Nothing for non-four-digit item codes
+getDepartment :: Int -> Maybe String
+getDepartment itemCode =
+    error "unimplemented"

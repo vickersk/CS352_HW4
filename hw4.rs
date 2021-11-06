@@ -1,60 +1,65 @@
 use std::fmt;
 
-/// A record representing a student's course performance
-pub struct ClassRecord {
-    /// Subject code
-    subject: String,
-    /// Course number
-    course_num: u16,
-    /// Section letter
-    section: String,
-    /// Number of course credits
-    num_credits: u8,     
-    /// Student's name  
-    student_name: String,
-    /// Grade in course
-    grade: f32
+/// A record representing a grocery item
+pub struct GroceryItem {
+    /// inventory code
+    item_code: u16,
+    /// human-readable name
+    name: String,
+    /// price per unit, in dollars
+    unit_price: f64,
+    /// quantity of item purchased
+    quantity: u16
 }
 
-// Print a ClassRecord
-impl fmt::Display for ClassRecord {
+/// Print a GroceryItem
+impl fmt::Display for GroceryItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{} {} {} {} {} {}]", 
-            self.subject, self.course_num, self.section, self.num_credits, 
-            self.student_name, self.grade)
+        write!(f, "[{} {} {} {}]", 
+            self.item_code, self.name, self.unit_price, 
+            self.quantity)
     }
 }
 
 /// Parsing error
 pub enum ParseError {
-    /// Wrong number of fields (value is number of fields provided)
-    WrongFieldCount(i32),
     /// Invalid course number (value is unparsed string)
-    InvalidCourseNum(String),
-    /// Invalid number of credits (value is unparsed string)
-    InvalidNumCredits(String),
-    /// Invalid grade (value is unparsed string)
-    InvalidGrade(String)
+    InvalidItemCode(String),
+    /// Invalid price (value is unparsed string)
+    InvalidPrice(String),
+    /// Wrong number of fields (value is number of fields provided)
+    WrongFieldCount(usize)
 }
 
-/// Converts a letter grade to the appropriate GPA
-/// A = 4.0, B = 3.0, C = 2.0, D = 1.0, F = 0.0
-/// All except F can be followed with + or - for +/- 0.3
-/// Return Some(grade) on success, None on failure
-fn letter_to_gpa(sgrade: &str) -> Option<f32> {
+/// Convert an input string in the following format to a GroceryItem:
+///   ItemCode ItemName UnitPrice
+///
+/// The fields are subject to the following constraints:
+///   * ItemCode is an integer value
+///   * ItemName is a single whitespace-delimited token
+///   * UnitPrice is a floating-point value
+///   * There are exactly three whitespace-separated tokens
+///   * The GroceryItem's quantity will be 1
+///
+/// Returns Ok(item) on a successful match, Err(err) on failure.
+pub fn read_item(line: &str) -> Result<GroceryItem, ParseError> {
     unimplemented!();
 }
 
-/// Convert an input string in the following format to a ClassRecord:
-///   Subject CourseNum Section NumCredits FirstName LastName GradeLetter
+/// Gets the department name for a given item code
 /// 
-/// The fields are subject to the following constraints:
-///   * CourseNum and NumCredits are integer values
-///   * GradeLetter is a valid grade according to the following grammar:
-///       [A-D]('+'|'-')? | 'F'
-///   * There are exactly seven whitespace-separated fields
+/// = Code = Department =
+///   1xxx   Grocery
+///   2xxx   Produce
+///   3xxx   Bakery
+///   4xxx   Deli
+///   5xxx   Dairy
+///   6xxx   Meat
+///   7xxx   Seafood
+///   8xxx   Housewares
+///   9xxx   Electronics
 ///
-/// Returns Ok(record) on successful match, Err(err) on failure.
-pub fn parse_record(line: &str) -> Result<ClassRecord,ParseError> {
+/// Returns None for non-four-digit item codes
+pub fn get_department(item_code: u16) -> Option<&'static str> {
     unimplemented!();
 }

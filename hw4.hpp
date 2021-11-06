@@ -3,21 +3,19 @@
 #include <sstream>
 #include <string>
 
-/// A record representing a student's course performance
-struct ClassRecord {
-    std::string subject;       ///< Subject code
-    int course_num;            ///< Course number
-    std::string section;       ///< Section letter
-    int num_credits;           ///< Number of course credits
-    std::string student_name;  ///< Student's name
-    double grade;              ///< Grade in course
+/// A record representing a grocery item
+struct GroceryItem {
+    int item_code;      ///< inventory code
+    std::string name;   ///< human-readable name
+    double unit_price;  ///< price per unit, in dollars
+    int quantity;       ///< quantity of item purchased
 };
 
-/// Print a ClassRecord
-std::ostream& operator<< (std::ostream& out, const ClassRecord& r) {
-    return 
-        out << "[" << r.subject << " " << r.course_num << " " << r.section << " " 
-            << r.num_credits << " " << r.student_name << " " << r.grade << "]";
+/// Print a GroceryItem
+std::ostream& operator<< (std::ostream& out, const GroceryItem& g) {
+    return out 
+        << "[" << g.item_code << " " << g.name 
+        << " " << g.unit_price << " " << g.quantity << "]";
 }
 
 /// Base class for parsing errors
@@ -27,53 +25,57 @@ public:
     virtual ~ParseError() = default;
 };
 
+/// An error representing an invalid item code
+struct InvalidItemCode : public ParseError {
+    std::string item_code;  ///< the item code that could not be parsed
+
+    InvalidItemCode(const std::string& s) : item_code(s) {}
+};
+
+/// An error representing an invalid price
+struct InvalidPrice : public ParseError {
+    std::string unit_price;  ///< the price that could not be parsed
+
+    InvalidPrice(const std::string& s) : unit_price(s) {}
+};
+
 /// An error representing the wrong number of fields
 struct WrongFieldCount : public ParseError {
-    int num_fields;  // the number of fields present
+    int num_fields;  ///< the number of fields present
 
     WrongFieldCount(int n) : num_fields(n) {}
 };
 
-/// An error representing an invalid course number
-struct InvalidCourseNum : public ParseError {
-    std::string course_num;  // the course number that could not be parsed
-
-    InvalidCourseNum(const std::string& n) : course_num(n) {}
-};
-
-/// An error representing an invalid number of credits
-struct InvalidNumCredits : public ParseError {
-    std::string num_credits;  // the number of credits that could not be parsed
-
-    InvalidNumCredits(const std::string& n) : num_credits(n) {}
-};
-
-/// An error representing an invalid grade
-struct InvalidGrade : public ParseError {
-    std::string grade;  // the grade that could not be parsed
-
-    InvalidGrade(const std::string& g) : grade(g) {}
-};
-
-/// Converts a letter grade to the appropriate GPA
-/// A = 4.0, B = 3.0, C = 2.0, D = 1.0, F = 0.0
-/// All except F can be followed with + or - for +/- 0.3
-/// Return the grade on success, throws InvalidGrade on failure
-double letterToGpa(const std::string& sgrade) {
+/// Convert an input string in the following format to a GroceryItem:
+///   ItemCode ItemName UnitPrice
+///
+/// The fields are subject to the following constraints:
+///   * ItemCode is an integer value
+///   * ItemName is a single whitespace-delimited token
+///   * UnitPrice is a floating-point value
+///   * There are exactly three whitespace-separated tokens
+///   * The GroceryItem's quantity will be 1
+///
+/// Returns the GroceryItem on a successful match, throws an appropriate
+/// ParseError on failure.
+GroceryItem read_item(const std::string& line) {
     assert(!"unimplemented");
 }
 
-/// Convert an input string in the following format to a ClassRecord:
-///   Subject CourseNum Section NumCredits FirstName LastName GradeLetter
+/// Gets the department name for a given item code
 /// 
-/// The fields are subject to the following constraints:
-///   * CourseNum and NumCredits are integer values
-///   * GradeLetter is a valid grade according to the following grammar:
-///       [A-D]('+'|'-')? | 'F'
-///   * There are exactly seven whitespace-separated fields
+/// = Code = Department =
+///   1xxx   Grocery
+///   2xxx   Produce
+///   3xxx   Bakery
+///   4xxx   Deli
+///   5xxx   Dairy
+///   6xxx   Meat
+///   7xxx   Seafood
+///   8xxx   Housewares
+///   9xxx   Electronics
 ///
-/// Returns the ClassRecord on successful match, throws an appropriate ParseError 
-/// on failure.
-ClassRecord parseRecord(const std::string& line) {
+/// Throws a NoSuchDepartment error for non-four-digit item codes
+std::string get_department(int item_code) {
     assert(!"unimplemented");
 }
