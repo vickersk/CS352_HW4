@@ -43,7 +43,92 @@ pub enum ParseError {
 ///
 /// Returns Ok(item) on a successful match, Err(err) on failure.
 pub fn read_item(line: &str) -> Result<GroceryItem, ParseError> {
-    unimplemented!();
+
+    // Splits the line on whitespace
+    let mut tokens = line.split_whitespace();
+
+    // Stores the item code for creating the GroceryItem
+    let code_value : u16;
+
+    // Extracts the first token as the item code
+    if let Some(item_code) = tokens.next() {
+
+        // Tries to convert the string to an integer
+        code_value = match item_code.trim().parse() {
+            Ok(val) => { val },
+            Err(_) => {
+                // Throws an InvalidItemCode error if the token
+                // can't be converted to an integer
+                return Err(ParseError::InvalidItemCode(item_code.to_string()))
+            }
+        };
+    
+    // Throws a WrongFieldCount exception if there is no token
+    } else {
+        return Err(ParseError::WrongFieldCount(0))
+    }
+
+    // Stores the name for creating the GroceryItem
+    let item_name;
+
+    // Extracts the second token as the item name
+    if let Some(name) = tokens.next() {
+        item_name = name.to_string();
+
+    // Throws a WrongFieldCount exception if there is no token
+    } else {
+        return Err(ParseError::WrongFieldCount(1))
+    }
+    
+    // Stores the price for creating the GroceryItem
+    let price_value : f64;
+
+    // Extracts the third token as the price
+    if let Some(price) = tokens.next() {
+    
+        // Tries to convert the string to a floating point
+        price_value = match price.trim().parse() {
+            Ok(val) => { val },
+            Err(_) => {
+                // Throws an InvalidPrice error if the token
+                // can't be converted to a floating point number
+                return Err(ParseError::InvalidPrice(price.to_string()))
+            }
+        };
+    
+        // Throws an InvalidPrice exception if the price
+        // is a negative floating point value
+        if price_value < 0.0 {
+            return Err(ParseError::InvalidPrice(price.to_string()))
+        }
+    
+    // Throws a WrongFieldCount exception if there is no token
+    } else {
+        return Err(ParseError::WrongFieldCount(2))
+    }
+
+    // Throws a WrongFieldCount exception if there is more than three tokens
+    if let Some(_) = tokens.next() {
+
+        let mut extra_tokens = 4;
+
+        // Checks if there are additional tokens
+        while let Some(_) = tokens.next() {
+            extra_tokens += 1;
+        }
+
+        return Err(ParseError::WrongFieldCount(extra_tokens))
+
+    // If there are no additional tokens, it returns the GroceryItem
+    // with the parsed tokens and 1 for the quantity
+    } else {
+        return Ok(GroceryItem {
+            item_code: code_value,
+            name: item_name,
+            unit_price: price_value,
+            quantity: 1
+        })
+    }
 }
 
 /// Gets the department name for a given item code

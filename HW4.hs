@@ -1,5 +1,7 @@
 module HW4(readItem, getDepartment) where
 
+import Data.Typeable
+
 -- A record representing a grocery item
 -- Contains item code, item name, unit price, and quantity
 type GroceryItem = (Int,String,Double,Int)
@@ -23,7 +25,7 @@ data ParseError =
 --
 -- Returns Right item on a successful match, Left err on failure.
 readItem :: String -> Either ParseError GroceryItem
-readItem line =
+readItem line = 
     error "unimplemented"
 
 -- Gets the department name for a given item code

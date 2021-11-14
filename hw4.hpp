@@ -59,7 +59,88 @@ struct WrongFieldCount : public ParseError {
 /// Returns the GroceryItem on a successful match, throws an appropriate
 /// ParseError on failure.
 GroceryItem read_item(const std::string& line) {
-    assert(!"unimplemented");
+
+    // Splits the line on whitespace
+    std::istringstream tokens{line};
+
+    // Extracts the first token as the item code
+    std::string itemCode;
+    int codeValue = -1;
+
+    // Checks if there exists a token
+    if (tokens >> itemCode) {
+
+        // If so, it tries to convert the string to an integer
+        try {
+            codeValue = std::stoi(itemCode);
+
+        // Throws an InvalidItemCode exception if the token
+        // can't be converted to an integer
+        } catch ( std::invalid_argument& e ) {
+            throw InvalidItemCode{itemCode};
+        }
+
+    // Throws a WrongFieldCount exception if there is no token
+    } else {
+        throw WrongFieldCount{0};
+    }
+    
+    // Extracts the second token as the item name
+    std::string itemName;
+
+    // Throws a WrongFieldCount exception if there is no token
+    if (!(tokens >> itemName)) {
+        throw WrongFieldCount{1};
+    }
+
+    // Extracts the third token as the price
+    std::string price;
+    double priceValue = -1;
+
+    // Checks if there exists a token
+    if (tokens >> price) {
+
+        // If so, it tries to convert the string to a double
+        try {
+            priceValue = std::stod(price);
+
+        // Throws an InvalidPrice exception if the token
+        // can't be converted to a double
+        } catch ( std::invalid_argument& e ) {
+            throw InvalidPrice{price};
+        }
+        
+        // Throws an InvalidPrice exception if the price
+        // is a negative floating point value
+        if (priceValue < 0) {
+            throw InvalidPrice{price};
+        }
+    
+    // Throws a WrongFieldCount Exception if there is no token
+    } else {
+        throw WrongFieldCount{2};
+    }
+
+    // Throws a WrongField Exception if there is more than three tokens
+    std::string other;
+    if ( tokens >> other ) {
+        int extra_tokens = 3;
+        
+        while ( tokens >> other ) {
+            extra_tokens++;
+        }
+
+        throw WrongFieldCount{extra_tokens};
+    }
+
+    // Returns a GroceryItem with the parsed tokens
+    // and 1 for the quanitty
+    return GroceryItem {
+        codeValue,
+        itemName,
+        priceValue,
+        1
+    };
 }
 
 /// Gets the department name for a given item code
