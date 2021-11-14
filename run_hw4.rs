@@ -15,8 +15,18 @@ fn read_all_items(
         if n_read == 0 { return Ok(()); } // end-of-file
 
         match hw4::read_item(&line) {
-            Ok(item) => 
-                writeln!(out, "{}", item)?,
+            Ok(item) => {
+                writeln!(out, "{}", item)?;
+                
+                // If the department number exists the department is printed
+                if let Some(department) = hw4::get_department(item.item_code) {
+                    writeln!(out, "{}", department)?;
+                
+                // If the department doesn't exist and error message is written
+                } else {
+                    writeln!(out, "No such department")?;
+                }
+            },
             Err(hw4::ParseError::InvalidItemCode(s)) =>
                 writeln!(out, "Invalid item code: {}", s)?,
             Err(hw4::ParseError::InvalidPrice(s)) =>

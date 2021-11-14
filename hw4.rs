@@ -3,7 +3,7 @@ use std::fmt;
 /// A record representing a grocery item
 pub struct GroceryItem {
     /// inventory code
-    item_code: u16,
+    pub item_code: u16,
     /// human-readable name
     name: String,
     /// price per unit, in dollars
@@ -146,5 +146,27 @@ pub fn read_item(line: &str) -> Result<GroceryItem, ParseError> {
 ///
 /// Returns None for non-four-digit item codes
 pub fn get_department(item_code: u16) -> Option<&'static str> {
-    unimplemented!();
+
+    // The position of the department number in the item code
+    const DEPARTMENT_POS: &'static u16 = &1000;
+
+    // Gets the department number
+    let department_num = item_code / DEPARTMENT_POS;
+
+    // Looks up the department number
+    match department_num {
+        1 => return Some("Grocery"),
+        2 => return Some("Produce"),
+        3 => return Some("Bakery"),
+        4 => return Some("Deli"),
+        5 => return Some("Dariy"),
+        6 => return Some("Meat"),
+        7 => return Some("Seafood"),
+        8 => return Some("Housewares"),
+        9 => return Some("Electronics"),
+
+        // Returns None if the department number doesn't
+        // exist or if the item code is not four digits
+        _ => return None
+    }
 }

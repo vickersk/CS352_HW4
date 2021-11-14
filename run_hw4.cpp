@@ -11,6 +11,18 @@ void read_all_items(std::istream& in, std::ostream& out) {
         try {
             GroceryItem item = read_item(line);
             out << item << std::endl;
+
+            // Tries to get the department corresponding to the item code.
+            // If the department exists it is printed
+            try {
+                std::string department = get_department(item.item_code);
+                out << department << std::endl;
+
+            // If the department doesn't exist and error message is written 
+            } catch (const NoSuchDepartment& e) {
+                out << "No such department: " << e.department << std::endl;
+            }
+
         } catch (const WrongFieldCount& e) {
             out << "Wrong number of fields: " << e.num_fields << std::endl;
         } catch (const InvalidItemCode& e) {

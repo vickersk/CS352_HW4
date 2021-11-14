@@ -46,6 +46,13 @@ struct WrongFieldCount : public ParseError {
     WrongFieldCount(int n) : num_fields(n) {}
 };
 
+// An error represetning a nonexistent department
+struct NoSuchDepartment : public ParseError {
+    int department; // the department that doesn't exist
+
+    NoSuchDepartment(int n) : department(n) {}
+};
+
 /// Convert an input string in the following format to a GroceryItem:
 ///   ItemCode ItemName UnitPrice
 ///
@@ -158,5 +165,37 @@ GroceryItem read_item(const std::string& line) {
 ///
 /// Throws a NoSuchDepartment error for non-four-digit item codes
 std::string get_department(int item_code) {
-    assert(!"unimplemented");
+
+    // The position of the department number in the item code
+    const static int DEPARTMENT_POS = 1000;
+
+    // Gets the department number
+    int department_num = item_code / DEPARTMENT_POS;
+
+    // Looks up the department number
+    switch(department_num) {
+        case 1:
+            return "Grocery";
+        case 2:
+            return "Produce";
+        case 3:
+            return "Bakery";
+        case 4: 
+            return "Deli";
+        case 5:
+            return "Dairy";
+        case 6:
+            return "Meat";
+        case 7:
+            return "Seafood";
+        case 8:
+            return "Housewares";
+        case 9:
+            return "Electronices";
+
+        // Throws a NoSuchDepartment exception if the department number
+        // doesn't exist or if the item code is not four digits
+        default:
+            throw NoSuchDepartment(department_num);
+    }
 }
