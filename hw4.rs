@@ -5,11 +5,11 @@ pub struct GroceryItem {
     /// inventory code
     pub item_code: u16,
     /// human-readable name
-    name: String,
+    pub name: String,
     /// price per unit, in dollars
-    unit_price: f64,
+    pub unit_price: f64,
     /// quantity of item purchased
-    quantity: u16
+    pub quantity: u16
 }
 
 /// Print a GroceryItem
