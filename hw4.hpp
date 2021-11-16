@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <math.h>
 
 /// A record representing a grocery item
 struct GroceryItem {
@@ -72,19 +73,30 @@ GroceryItem read_item(const std::string& line) {
 
     // Extracts the first token as the item code
     std::string itemCode;
-    int codeValue = -1;
+    float floatValue;
+    int codeValue;
 
     // Checks if there exists a token
     if (tokens >> itemCode) {
 
         // If so, it tries to convert the string to an integer
         try {
-            codeValue = std::stoi(itemCode);
+            floatValue = std::stof(itemCode);
 
         // Throws an InvalidItemCode exception if the token
         // can't be converted to an integer
         } catch ( std::invalid_argument& e ) {
             throw InvalidItemCode{itemCode};
+        }
+
+        // Throws an InvalidItemCode exception if the item code
+        // is not an integer
+        if (int(floatValue) != floatValue) {
+            throw InvalidItemCode{itemCode};
+
+        // Castes the converted float to an integer
+        } else {
+            codeValue = floatValue;
         }
 
     // Throws a WrongFieldCount exception if there is no token
@@ -102,7 +114,7 @@ GroceryItem read_item(const std::string& line) {
 
     // Extracts the third token as the price
     std::string price;
-    double priceValue = -1;
+    double priceValue;
 
     // Checks if there exists a token
     if (tokens >> price) {
